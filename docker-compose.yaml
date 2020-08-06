@@ -1,0 +1,47 @@
+
+version: "3.3"
+
+services:
+  oap:
+    image: apache/skywalking-oap-server:8.0.0-es6
+    ports:
+      - 11800:11800
+      - 12800:12800
+
+  service1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 
+      - -svc
+      - service1
+      - -ins
+      - service1-instance-1
+      - -next
+      - service2:3000
+      - -oap
+      - oap:11800
+    ports:
+      - 3000:3000
+
+  service2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - -svc
+      - service2
+      - -ins
+      - service2-instance-1
+      - -oap
+      - oap:11800
+
+  ui:
+    image: apache/skywalking-ui:8.0.0
+    depends_on:
+      - oap
+    ports:
+      - 8080:8080
+    environment:
+      SW_OAP_ADDRESS: oap:12800
+      
