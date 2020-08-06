@@ -7,6 +7,11 @@ services:
     ports:
       - 11800:11800
       - 12800:12800
+    healthcheck:
+      test: ["CMD-SHELL", "/skywalking/bin/swctl"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
 
   service1:
     build:
