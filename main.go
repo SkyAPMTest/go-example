@@ -62,6 +62,9 @@ func endFunc(nextSvc string, tracer *go2sky.Tracer) http.HandlerFunc {
 
 		// call next service
 		request, err := http.NewRequest("POST", fmt.Sprintf("http://%s/", nextSvc), nil)
+		if request != nil {
+			request = request.WithContext(r.Context())
+		}
 		if err != nil {
 			log.Fatalf("unable to create http request: %+v\n", err)
 		}
